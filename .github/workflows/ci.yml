@@ -1,0 +1,35 @@
+# Checks for this tool's own code.
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12", "3.14"]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check . && ruff format --check .
+      - run: python -m pytest
+      - name: The examples behave as documented
+        run: |
+          python -m tfpolicy examples/plan-compliant.json --policy policies/default.yaml
+          if python -m tfpolicy examples/plan-violations.json --policy policies/default.yaml; then
+            echo "the violating example must fail"; exit 1
+          fi

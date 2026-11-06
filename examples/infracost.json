@@ -1,0 +1,29 @@
+{
+  "version": "0.2",
+  "currency": "USD",
+  "totalMonthlyCost": "742.18",
+  "pastTotalMonthlyCost": "301.40",
+  "diffTotalMonthlyCost": "440.78",
+  "projects": [
+    {
+      "name": "yefter-app",
+      "breakdown": {
+        "totalMonthlyCost": "742.18",
+        "resources": [
+          {
+            "name": "aws_db_instance.reports",
+            "monthlyCost": "583.44"
+          },
+          {
+            "name": "aws_instance.app",
+            "monthlyCost": "15.18"
+          },
+          {
+            "name": "aws_s3_bucket.logs",
+            "monthlyCost": null
+          }
+        ]
+      }
+    }
+  ]
+}

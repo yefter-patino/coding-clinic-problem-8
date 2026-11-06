@@ -1,0 +1,53 @@
+# Policy-as-code ruleset for Terraform plans. Change the values here, not in the code.
+version: 1
+
+# The pipeline fails when there is at least one violation of this severity (error | warning).
+fail_on: error
+
+rules:
+  # S3 buckets and Azure storage must not be readable by the public.
+  no-public-storage:
+    severity: error
+    require_s3_public_access_block: true   # every new S3 bucket needs a public access block in the plan
+
+  # Every taggable resource needs these tags. A list = allowed values; pattern = regular expression; {} = any value.
+  required-tags:
+    severity: error
+    tags:
+      Owner: {}
+      Environment: [dev, stage, prod]
+      CostCenter: {pattern: "^CC-[0-9]{4}$"}
+
+  # No SSH / RDP open to 0.0.0.0/0 (security groups and Azure NSGs).
+  no-open-ingress:
+    severity: error
+    ports: [22, 3389]
+
+  # Databases, disks and file systems must be encrypted.
+  encryption-at-rest:
+    severity: error
+
+  # Only these sizes (wildcards allowed).
+  allowed-sizes:
+    severity: warning
+    allowed: ["t3.*", "t4g.*", "m7g.*", "db.t4g.*", "Standard_B*", "Standard_D*s_v5"]
+
+  # Never destroy (or replace) these: data would be lost.
+  no-destroy:
+    severity: error
+    types: [aws_db_instance, aws_rds_cluster, aws_s3_bucket, aws_dynamodb_table, aws_efs_file_system,
+            azurerm_storage_account, azurerm_mssql_database, azurerm_postgresql_flexible_server]
+
+  # Needs --infracost (output of: infracost breakdown --path plan.json --format json). Amounts in that currency.
+  cost-limits:
+    severity: error
+    max_monthly_total: 500
+    max_monthly_increase: 100
+    max_resource_monthly: 200
+
+# Accepted exceptions. Each one needs a reason and an end date; expired ones stop working.
+exemptions: []
+#  - rule: no-open-ingress
+#    address: module.bastion.aws_security_group.ssh
+#    reason: "Bastion host; source IPs restricted by the network ACL. Ticket SEC-123"
+#    expires: 2026-12-31

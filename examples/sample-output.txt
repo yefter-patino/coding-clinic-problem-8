@@ -1,0 +1,20 @@
+$ python -m tfpolicy examples/plan-violations.json --policy policies/default.yaml --infracost examples/infracost.json
+Checked 8 resource(s) with 7 rule(s).
+  [ERROR  ] no-public-storage    aws_s3_bucket_acl.public_site: bucket ACL is 'public-read' (public)
+  [ERROR  ] no-public-storage    aws_s3_bucket_policy.public_site: bucket policy allows Principal "*" without a Condition
+  [ERROR  ] no-public-storage    azurerm_storage_account.data: allow_nested_items_to_be_public = true (anonymous blob access)
+  [ERROR  ] no-public-storage    aws_s3_bucket.public_site: S3 bucket has no aws_s3_bucket_public_access_block in this plan
+  [ERROR  ] required-tags        aws_s3_bucket.public_site: tag Environment='production' is not one of ['dev', 'stage', 'prod']
+  [ERROR  ] required-tags        aws_s3_bucket.public_site: missing required tag 'CostCenter'
+  [ERROR  ] required-tags        azurerm_storage_account.data: missing required tag 'Environment'
+  [ERROR  ] required-tags        azurerm_storage_account.data: missing required tag 'CostCenter'
+  [ERROR  ] no-open-ingress      aws_security_group.admin: ingress rule opens port(s) [22] to the whole internet
+  [ERROR  ] no-open-ingress      azurerm_network_security_rule.rdp: NSG rule 'allow-rdp' opens port(s) [3389] to the internet
+  [ERROR  ] encryption-at-rest   aws_db_instance.reports: storage_encrypted must be true
+  [WARNING] allowed-sizes        aws_db_instance.reports: instance_class 'db.r6i.4xlarge' is not in the allowed list
+  [ERROR  ] no-destroy           aws_db_instance.legacy: would be destroyed; data may be lost
+  [ERROR  ] cost-limits          (cost): monthly total 742.18 USD is over the limit of 500.00
+  [ERROR  ] cost-limits          (cost): monthly increase 440.78 USD is over the limit of 100.00
+  [ERROR  ] cost-limits          aws_db_instance.reports: costs 583.44 USD/month, over 200.00
+FAIL: 15 error(s), 1 warning(s), 0 exempted (fail on: error)
+exit code: 1

@@ -1,0 +1,205 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.16.0",
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket.public_site",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "public_site",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "bucket": "yefter-public-site",
+          "tags": {
+            "Owner": "yefter",
+            "Environment": "production"
+          },
+          "tags_all": {
+            "Owner": "yefter",
+            "Environment": "production"
+          }
+        },
+        "after_unknown": {}
+      }
+    },
+    {
+      "address": "aws_s3_bucket_acl.public_site",
+      "mode": "managed",
+      "type": "aws_s3_bucket_acl",
+      "name": "public_site",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "bucket": "yefter-public-site",
+          "acl": "public-read"
+        },
+        "after_unknown": {}
+      }
+    },
+    {
+      "address": "aws_s3_bucket_policy.public_site",
+      "mode": "managed",
+      "type": "aws_s3_bucket_policy",
+      "name": "public_site",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "bucket": "yefter-public-site",
+          "policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Effect\": \"Allow\", \"Principal\": \"*\", \"Action\": \"s3:GetObject\", \"Resource\": \"arn:aws:s3:::yefter-public-site/*\"}]}"
+        },
+        "after_unknown": {}
+      }
+    },
+    {
+      "address": "aws_security_group.admin",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "admin",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "yefter-admin",
+          "tags": {
+            "Owner": "yefter",
+            "Environment": "prod",
+            "CostCenter": "CC-1234",
+            "ManagedBy": "terraform"
+          },
+          "tags_all": {
+            "Owner": "yefter",
+            "Environment": "prod",
+            "CostCenter": "CC-1234",
+            "ManagedBy": "terraform"
+          },
+          "ingress": [
+            {
+              "from_port": 22,
+              "to_port": 22,
+              "protocol": "tcp",
+              "cidr_blocks": [
+                "0.0.0.0/0"
+              ],
+              "ipv6_cidr_blocks": []
+            }
+          ]
+        },
+        "after_unknown": {}
+      }
+    },
+    {
+      "address": "aws_db_instance.reports",
+      "mode": "managed",
+      "type": "aws_db_instance",
+      "name": "reports",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "identifier": "yefter-reports",
+          "instance_class": "db.r6i.4xlarge",
+          "storage_encrypted": false,
+          "tags": {
+            "Owner": "yefter",
+            "Environment": "prod",
+            "CostCenter": "CC-1234",
+            "ManagedBy": "terraform"
+          },
+          "tags_all": {
+            "Owner": "yefter",
+            "Environment": "prod",
+            "CostCenter": "CC-1234",
+            "ManagedBy": "terraform"
+          }
+        },
+        "after_unknown": {}
+      }
+    },
+    {
+      "address": "aws_db_instance.legacy",
+      "mode": "managed",
+      "type": "aws_db_instance",
+      "name": "legacy",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "identifier": "yefter-legacy",
+          "storage_encrypted": true
+        },
+        "after": null,
+        "after_unknown": {}
+      }
+    },
+    {
+      "address": "azurerm_storage_account.data",
+      "mode": "managed",
+      "type": "azurerm_storage_account",
+      "name": "data",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "yefterdata",
+          "allow_nested_items_to_be_public": true,
+          "tags": {
+            "Owner": "yefter"
+          }
+        },
+        "after_unknown": {}
+      }
+    },
+    {
+      "address": "azurerm_network_security_rule.rdp",
+      "mode": "managed",
+      "type": "azurerm_network_security_rule",
+      "name": "rdp",
+      "provider_name": "registry.terraform.io/hashicorp/azurerm",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "allow-rdp",
+          "direction": "Inbound",
+          "access": "Allow",
+          "protocol": "Tcp",
+          "source_address_prefix": "Internet",
+          "destination_port_range": "3389"
+        },
+        "after_unknown": {}
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": [],
+      "module_calls": {}
+    }
+  }
+}

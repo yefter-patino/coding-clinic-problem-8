@@ -1,0 +1,178 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.16.0",
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket.logs",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "logs",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "bucket": "yefter-logs",
+          "tags": {
+            "Owner": "yefter",
+            "Environment": "prod",
+            "CostCenter": "CC-1234",
+            "ManagedBy": "terraform"
+          },
+          "tags_all": {
+            "Owner": "yefter",
+            "Environment": "prod",
+            "CostCenter": "CC-1234",
+            "ManagedBy": "terraform"
+          }
+        },
+        "after_unknown": {}
+      }
+    },
+    {
+      "address": "aws_s3_bucket_public_access_block.logs",
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "logs",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "block_public_acls": true,
+          "block_public_policy": true,
+          "ignore_public_acls": true,
+          "restrict_public_buckets": true
+        },
+        "after_unknown": {
+          "bucket": true
+        }
+      }
+    },
+    {
+      "address": "aws_security_group.web",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "web",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "yefter-web",
+          "tags": {
+            "Owner": "yefter",
+            "Environment": "prod",
+            "CostCenter": "CC-1234",
+            "ManagedBy": "terraform"
+          },
+          "tags_all": {
+            "Owner": "yefter",
+            "Environment": "prod",
+            "CostCenter": "CC-1234",
+            "ManagedBy": "terraform"
+          },
+          "ingress": [
+            {
+              "from_port": 443,
+              "to_port": 443,
+              "protocol": "tcp",
+              "cidr_blocks": [
+                "0.0.0.0/0"
+              ],
+              "ipv6_cidr_blocks": []
+            }
+          ]
+        },
+        "after_unknown": {}
+      }
+    },
+    {
+      "address": "aws_db_instance.app",
+      "mode": "managed",
+      "type": "aws_db_instance",
+      "name": "app",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "identifier": "yefter-app",
+          "instance_class": "db.t4g.micro",
+          "storage_encrypted": true,
+          "tags": {
+            "Owner": "yefter",
+            "Environment": "prod",
+            "CostCenter": "CC-1234",
+            "ManagedBy": "terraform"
+          },
+          "tags_all": {
+            "Owner": "yefter",
+            "Environment": "prod",
+            "CostCenter": "CC-1234",
+            "ManagedBy": "terraform"
+          }
+        },
+        "after_unknown": {}
+      }
+    },
+    {
+      "address": "aws_instance.app",
+      "mode": "managed",
+      "type": "aws_instance",
+      "name": "app",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "instance_type": "t3.small",
+          "tags": {
+            "Owner": "yefter",
+            "Environment": "prod",
+            "CostCenter": "CC-1234",
+            "ManagedBy": "terraform"
+          },
+          "tags_all": {
+            "Owner": "yefter",
+            "Environment": "prod",
+            "CostCenter": "CC-1234",
+            "ManagedBy": "terraform"
+          }
+        },
+        "after_unknown": {}
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_s3_bucket_public_access_block.logs",
+          "mode": "managed",
+          "type": "aws_s3_bucket_public_access_block",
+          "name": "logs",
+          "expressions": {
+            "bucket": {
+              "references": [
+                "aws_s3_bucket.logs.id",
+                "aws_s3_bucket.logs"
+              ]
+            }
+          }
+        }
+      ],
+      "module_calls": {}
+    }
+  }
+}

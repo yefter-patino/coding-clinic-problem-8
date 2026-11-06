@@ -1,0 +1,33 @@
+flowchart TD
+    pr(["Pull request or push<br/>to an infrastructure repo"]) --> plan["terraform plan -out plan.out<br/>terraform show -json plan.out > plan.json"]
+    plan --> cost["infracost breakdown --path plan.json<br/>--format json > infracost.json"]
+    plan --> load
+    cost --> load
+    policy[/"policies/default.yaml<br/>rules + limits + exemptions"/] --> load
+    load["python -m tfpolicy<br/>read plan, cost and policy"] --> rules
+
+    subgraph rules["Rules (each one only reads the plan)"]
+        direction LR
+        r1["no-public-storage<br/>S3 ACL / policy / access block<br/>Azure blob access"]
+        r2["required-tags<br/>Owner, Environment, CostCenter<br/>(tags_all incl. default_tags)"]
+        r3["no-open-ingress<br/>22 / 3389 from 0.0.0.0/0<br/>SG + Azure NSG"]
+        r4["encryption-at-rest<br/>RDS, EBS, EFS"]
+        r5["allowed-sizes<br/>instance types / VM sizes"]
+        r6["no-destroy<br/>databases, buckets,<br/>storage accounts"]
+        r7["cost-limits<br/>total, increase,<br/>per resource"]
+    end
+
+    rules --> exempt{"Exemption with a reason<br/>and a future end date?"}
+    exempt -- "yes" --> marked["Marked EXEMPT<br/>(still shown in the report)"]
+    exempt -- "expired or none" --> counted["Counted as<br/>error or warning"]
+    marked --> verdict
+    counted --> verdict{"Any violation at the<br/>fail_on severity?"}
+    verdict -- no --> pass(["Exit 0: PASS<br/>apply may run"])
+    verdict -- yes --> fail(["Exit 1: FAIL<br/>pipeline stops, no apply"])
+    load -. "bad plan or policy file" .-> err(["Exit 2: input error"])
+    verdict --> report["Reports: terminal text, JSON,<br/>Markdown PR comment,<br/>GitHub annotations + job summary"]
+
+    classDef bad fill:#fde2e1,stroke:#c0392b,color:#000
+    classDef good fill:#e3f4e1,stroke:#2e7d32,color:#000
+    class fail,err bad
+    class pass good
